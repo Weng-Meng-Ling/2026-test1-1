@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>2026年第一次外勤人員檢測</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
+  :root {
+    --primary: #1a6fa8; --primary-light: #2d8fce; --primary-pale: #e8f4fd;
+    --primary-mid: #b3d9f5; --accent: #0e4f7a; --bg: #f0f7ff; --white: #ffffff;
+    --text: #1e2d3d; --text-mid: #4a6580; --border: #c5dff0;
+    --correct: #1a8a5a; --correct-bg: #e8f7f0; --wrong: #c0392b; --wrong-bg: #fdecea;
+    --warn: #e53935; --shadow: 0 4px 20px rgba(26,111,168,0.12); --radius: 12px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Noto Sans TC', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh;
+    background-image: radial-gradient(circle at 10% 20%, rgba(45,143,206,0.08) 0%, transparent 40%), radial-gradient(circle at 90% 80%, rgba(26,111,168,0.06) 0%, transparent 40%); }
+  #cover { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+  .cover-card { background: var(--white); border-radius: 24px; box-shadow: 0 8px 48px rgba(26,111,168,0.18); padding: 60px 56px; max-width: 540px; width: 100%; text-align: center; border-top: 6px solid var(--primary); }
+  .cover-badge { display: inline-block; background: var(--primary-pale); color: var(--primary); font-size: 13px; font-weight: 600; letter-spacing: 2px; padding: 6px 18px; border-radius: 20px; margin-bottom: 24px; border: 1px solid var(--primary-mid); }
+  .cover-title { font-size: 28px; font-weight: 700; color: var(--accent); line-height: 1.4; margin-bottom: 8px; }
+  .cover-subtitle { font-size: 14px; color: var(--text-mid); margin-bottom: 40px; line-height: 1.6; }
+  .cover-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 36px; text-align: left; }
+  .info-box { background: var(--primary-pale); border: 1px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+  .info-box label { display: block; font-size: 11px; font-weight: 700; color: var(--primary); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+  .info-box input { width: 100%; border: none; background: transparent; font-size: 15px; font-family: 'Noto Sans TC', sans-serif; color: var(--text); outline: none; border-bottom: 2px solid var(--primary-mid); padding-bottom: 4px; transition: border-color 0.2s; }
+  .info-box input:focus { border-bottom-color: var(--primary); }
+  .info-box input::placeholder { color: #aac4d8; }
+  .cover-rules { background: var(--primary-pale); border-radius: 10px; padding: 16px 20px; margin-bottom: 32px; text-align: left; border-left: 4px solid var(--primary); }
+  .cover-rules p { font-size: 13px; color: var(--text-mid); line-height: 1.8; }
+  .cover-rules strong { color: var(--primary); }
+  .btn-start { background: linear-gradient(135deg, var(--primary-light), var(--primary)); color: white; border: none; padding: 16px 48px; border-radius: 50px; font-size: 17px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif; cursor: pointer; box-shadow: 0 6px 24px rgba(26,111,168,0.35); transition: all 0.2s; letter-spacing: 1px; }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(26,111,168,0.4); }
+  #exam { display: none; }
+  .exam-header { background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white; padding: 20px 32px; position: sticky; top: 0; z-index: 100; box-shadow: 0 4px 20px rgba(14,79,122,0.3); }
+  .exam-header-inner { max-width: 900px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+  .exam-htitle { font-size: 17px; font-weight: 700; letter-spacing: 1px; }
+  .exam-usertag { font-size: 13px; opacity: 0.85; }
+  .progress-bar-wrap { background: rgba(255,255,255,0.2); border-radius: 20px; height: 6px; flex: 1; min-width: 120px; max-width: 260px; }
+  .progress-bar-fill { background: #7ee8fa; height: 100%; border-radius: 20px; transition: width 0.3s; width: 0%; }
+  .answered-count { font-size: 13px; white-space: nowrap; font-weight: 600; }
+  .exam-body { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+  .section-header { display: flex; align-items: center; gap: 12px; margin: 40px 0 20px; flex-wrap: wrap; }
+  .section-header:first-child { margin-top: 0; }
+  .section-badge { background: var(--primary); color: white; font-size: 12px; font-weight: 700; padding: 5px 14px; border-radius: 20px; letter-spacing: 1px; white-space: nowrap; }
+  .section-title { font-size: 17px; font-weight: 700; color: var(--accent); }
+  .section-rule { font-size: 12px; color: var(--text-mid); background: var(--primary-pale); padding: 4px 12px; border-radius: 20px; border: 1px solid var(--border); }
+  .q-card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 24px; margin-bottom: 14px; border: 1.5px solid transparent; transition: border-color 0.2s, box-shadow 0.2s; }
+  .q-card:hover { box-shadow: 0 6px 28px rgba(26,111,168,0.16); }
+  .q-card.answered { border-color: var(--primary-mid); }
+  .q-card.correct-card { border-color: var(--correct); background: var(--correct-bg); }
+  .q-card.wrong-card { border-color: var(--wrong); background: var(--wrong-bg); }
+  .q-num { display: inline-flex; align-items: center; justify-content: center; background: var(--primary); color: white; font-size: 11px; font-weight: 700; min-width: 26px; height: 26px; border-radius: 50%; margin-right: 10px; flex-shrink: 0; }
+  .q-text { font-size: 15px; font-weight: 500; line-height: 1.7; color: var(--text); display: flex; align-items: flex-start; }
+  .q-text-content { flex: 1; }
+  .q-options { margin-top: 14px; display: flex; flex-direction: column; gap: 8px; }
+  .opt-label { display: flex; align-items: center; gap: 10px; padding: 10px 14px; border-radius: 8px; border: 1.5px solid var(--border); cursor: pointer; transition: all 0.15s; font-size: 14px; color: var(--text); background: var(--bg); }
+  .opt-label:hover { border-color: var(--primary-light); background: var(--primary-pale); }
+  .opt-label input[type=radio], .opt-label input[type=checkbox] { accent-color: var(--primary); width: 16px; height: 16px; flex-shrink: 0; }
+  .tf-options { display: flex; gap: 12px; margin-top: 12px; }
+  .tf-btn { flex: 1; padding: 10px; border: 1.5px solid var(--border); border-radius: 8px; background: var(--bg); cursor: pointer; font-size: 14px; font-family: 'Noto Sans TC', sans-serif; font-weight: 600; transition: all 0.15s; color: var(--text); display: flex; align-items: center; justify-content: center; gap: 6px; }
+  .tf-btn:hover { border-color: var(--primary-light); background: var(--primary-pale); }
+  .tf-btn.selected { background: #d0eaf9; border: 2.5px solid var(--primary); color: var(--primary); font-weight: 700; box-shadow: inset 0 0 0 1px var(--primary); }
+  .opt-label:has(input:checked) { background: #d0eaf9; border: 2.5px solid var(--primary); color: var(--primary); font-weight: 600; box-shadow: inset 0 0 0 1px var(--primary); }
+  .essay-textarea { width: 100%; border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 14px; font-size: 14px; font-family: 'Noto Sans TC', sans-serif; color: var(--text); resize: vertical; min-height: 100px; outline: none; background: var(--bg); transition: border-color 0.2s; margin-top: 12px; }
+  .essay-textarea:focus { border-color: var(--primary); background: white; }
+  .submit-wrap { text-align: center; margin-top: 48px; }
+  .btn-submit { background: linear-gradient(135deg, var(--primary-light), var(--accent)); color: white; border: none; padding: 18px 64px; border-radius: 50px; font-size: 18px; font-weight: 700; font-family: 'Noto Sans TC', sans-serif; cursor: pointer; box-shadow: 0 8px 32px rgba(14,79,122,0.35); transition: all 0.2s; letter-spacing: 1px; }
+  .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(14,79,122,0.4); }
+  .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  #result { display: none; }
+  .result-header { background: linear-gradient(135deg, var(--accent) 0%, var(--primary) 100%); color: white; padding: 40px 32px; text-align: center; }
+  .result-header h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+  .result-header p { font-size: 14px; opacity: 0.85; }
+  .result-body { max-width: 900px; margin: 0 auto; padding: 32px 20px 80px; }
+  .score-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .score-cell { background: var(--white); border-radius: 12px; padding: 20px 16px; text-align: center; box-shadow: var(--shadow); border-top: 3px solid var(--primary-mid); }
+  .score-cell.total-cell { border-top-color: var(--primary); background: var(--primary-pale); }
+  .score-cell .sc-label { font-size: 12px; color: var(--text-mid); font-weight: 600; letter-spacing: 0.5px; margin-bottom: 8px; }
+  .score-cell .sc-val { font-size: 28px; font-weight: 800; color: var(--primary); font-family: 'Nunito', sans-serif; }
+  .score-cell.total-cell .sc-val { font-size: 34px; color: var(--accent); }
+  .score-cell .sc-max { font-size: 12px; color: var(--text-mid); margin-top: 2px; }
+  .progress-big { background: var(--white); border-radius: 12px; padding: 20px 24px; box-shadow: var(--shadow); margin-bottom: 28px; }
+  .progress-big-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-mid); margin-bottom: 10px; font-weight: 600; }
+  .progress-big-bar { background: var(--bg); border-radius: 20px; height: 18px; overflow: hidden; }
+  .progress-big-fill { height: 100%; border-radius: 20px; background: linear-gradient(90deg, var(--primary-light), var(--primary)); transition: width 1s ease-out; }
+  .warn-notice { background: #fff5f5; border: 2px solid var(--warn); border-radius: 12px; padding: 18px 24px; text-align: center; margin-bottom: 32px; }
+  .warn-notice p { color: var(--warn); font-size: 16px; font-weight: 700; letter-spacing: 0.5px; line-height: 1.6; }
+  .overlay { display: none; position: fixed; inset: 0; background: rgba(14,79,122,0.7); z-index: 999; align-items: center; justify-content: center; flex-direction: column; gap: 20px; color: white; font-size: 16px; font-weight: 600; }
+  .overlay.show { display: flex; }
+  .spinner { width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.3); border-top-color: white; border-radius: 50%; animation: spin 0.8s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .multi-hint { font-size: 12px; color: var(--primary); background: var(--primary-pale); border: 1px solid var(--border); padding: 4px 10px; border-radius: 20px; display: inline-block; margin-top: 4px; margin-bottom: 4px; }
+  .divider { border: none; border-top: 2px dashed var(--border); margin: 8px 0 24px; }
+  .send-confirm { background: #e6f9f0; border: 2px solid var(--correct); border-radius: 12px; padding: 14px 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 10px; font-size: 16px; font-weight: 700; color: var(--correct); }
+  .send-confirm-icon { font-size: 20px; background: var(--correct); color: white; border-radius: 50%; width: 30px; height: 30px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .warn-notice p { color: var(--warn); font-size: 16px; font-weight: 800; letter-spacing: 0.5px; line-height: 1.6; }
+  @media (max-width: 600px) { .cover-card { padding: 36px 24px; } .cover-info-grid { grid-template-columns: 1fr; } .exam-htitle { font-size: 15px; } .score-grid { grid-template-columns: repeat(2, 1fr); } }
+</style>
+</head>
+<body>
+
+<div id="cover">
+  <div class="cover-card">
+    <h1 class="cover-title">2026年第一次<br>外勤人員職能檢測</h1>
+    <p class="cover-subtitle">請填寫基本資料後開始作答</p>
+    <div class="cover-info-grid">
+      <div class="info-box">
+        <label>部門</label>
+        <input type="text" id="inp-dept" placeholder="請輸入部門名稱" autocomplete="off">
+      </div>
+      <div class="info-box">
+        <label>英文姓名</label>
+        <input type="text" id="inp-name" placeholder="English Name" autocomplete="off">
+      </div>
+    </div>
+    <div class="cover-rules">
+      <p>
+        <strong>學科 50 題</strong>（是非 10 ＋ 選擇 25 ＋ 複選 15）<br>
+        複選題須全部正確方可得分・作答完畢後請提交測驗
+      </p>
+    </div>
+    <button class="btn-start" onclick="startExam()">開始作答 →</button>
+  </div>
+</div>
+
+<div id="exam">
+  <div class="exam-header">
+    <div class="exam-header-inner">
+      <div>
+        <div class="exam-htitle">2026年第一次外勤人員職能檢測</div>
+        <div class="exam-usertag" id="user-tag">—</div>
+      </div>
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="prog-fill"></div></div>
+      <div class="answered-count" id="ans-count">0 / 54</div>
+    </div>
+  </div>
+  <div class="exam-body" id="exam-body"></div>
+  <div class="submit-wrap">
+    <button class="btn-submit" id="btn-submit" onclick="submitExam()">提交測驗</button>
+  </div>
+</div>
+
+<div id="result">
+  <div class="result-header">
+    <h2>測驗結果 · 2026年第一次外勤人員職能檢測</h2>
+    <p id="result-user-tag">—</p>
+  </div>
+  <div class="result-body">
+    <div class="send-confirm" id="send-confirm" style="display:none">
+      <span class="send-confirm-icon">✓</span> 已執行傳送動作
+    </div>
+    <div class="score-grid" id="score-grid"></div>
+    <div class="progress-big">
+      <div class="progress-big-label"><span>學科得分</span><span id="pct-label">0%</span></div>
+      <div class="progress-big-bar"><div class="progress-big-fill" id="prog-big" style="width:0%"></div></div>
+    </div>
+    <div class="warn-notice">
+      <p>⚠️ 請勿關閉網頁，請通知人事確認測驗結果！<br>術科成績待通知</p>
+    </div>
+    <hr class="divider">
+    <div id="review-area"></div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay">
+  <div class="spinner"></div>
+  <div>正在提交測驗，請稍候…</div>
+</div>
+
+<script>
+const TF_BANK = [
+  { q: "每週一為全體會議時間。", ans: false },
+  { q: "同仁若於非正常下班時間（如：請假提早下班）離開公司，無論使用人臉辨識、指紋機或打卡機，直接打卡即可。", ans: false },
+  { q: "在安全的室內等待救援時，如果門後有煙，應該要趕快把門、窗打開通風。", ans: false },
+  { q: "車輛違規肇事者，依公司規定予以處分，違規罰款部分由駕駛人自行負責；違規記點，公司會向《台中市交通事件裁決處》申請轉移至違規汽車駕駛人。", ans: true },
+  { q: "發生火災時，若發現受困環境中煙霧瀰漫，應採取高姿態快速奔跑，以爭取逃生時間。", ans: false },
+  { q: "同仁對於薪資計算結果或薪資單明細如有疑義，應直接向財務課出納人員尋求諮詢與更正。", ans: false },
+  { q: "關於公司軟體與資料安全，同仁可視個人需求擅自安裝軟體，或將公司擁有的軟體及資料拷貝至外部使用。", ans: false },
+  { q: "同仁因公需往返外地且【無公務車】可使用時，經部門主管呈報上級主管同意者，不限職位，均得以台灣高鐵【標準車廂】之憑證核實報銷，外勤單位駐點、交接、輪休不適用此條文。", ans: true },
+  { q: "雇主對勞工應施以從事工作與預防災變所必要之安全衛生教育及訓練，勞工對於安全衛生教育及訓練，有接受之義務。", ans: true },
+  { q: "臨時請假須提前報備，事後回報不得用特休與榮譽假。", ans: true },
+  { q: "依據「道路交通管理處罰條例」第33條規定：行駛途中，若有車輪、輪胎膠皮或車輛機件脫落、輪胎任一點胎紋深度不足等情事，可處駕駛人新臺幣3000元～6000元罰鍰；而車輛缺水、缺油等問題，可處新臺幣600～1200元罰鍰。", ans: true },
+  { q: "火是火場中最大的殺手。", ans: false },
+  { q: "由資材部規劃的年度盤點為公司重大活動，考量盤點人力上的調度與支援，於盤點期間實施管制休假。", ans: true },
+  { q: "若在辦公室發現初期小火，而周圍安全的情況下可先拿滅火器滅火。", ans: true },
+  { q: "當因公務需求出外勤時，不論是否為上班時間，皆需要於iNET系統作回報。", ans: true },
+  { q: "當日上班後如臨時請假，經部門主管核准後，下班時不用打下班卡。", ans: false },
+  { q: "若同仁提出加班，僅可選擇「補休」方式；且補休需於申請加班之次月底前休畢，如因故無法休畢且無提出申訴，則折合薪資加班費發給。", ans: false },
+  { q: "同仁離開原先辦公區域樓層，應於iNET系統進行「樓層移動」，以確保人事單位即時掌握同仁動向。", ans: true },
+  { q: "駕駛公務車應注意行車安全並嚴禁酒後駕車；此外，為維護車內環境，應隨時保持車內清潔並全面禁菸。", ans: true },
+  { q: "E系列只有使用公司的遊戲？", ans: false }
+];
+
+const SC1_BANK = [
+  { q: "百家二代遊戲中，累積獎中獎條件為「莊閒對子」時，若玩家欲得到累積獎，請問必需針對下列哪些項目做押注？", opts: ["莊家、閒家及和","以上皆可","閒家對子與莊家對子","莊家與閒家"], ans: 2 },
+  { q: "百家樂遊戲中，每場開牌的牌路組合稱為？", opts: ["前場紀錄","路單","統計表","電子看板"], ans: 1 },
+  { q: "關於雀神滿天下抽佣，何者有誤？", opts: ["抽佣為0~30%","不管輸贏都要被抽","不同廳可設定不同的抽佣%數","僅抽贏家"], ans: 1 },
+  { q: "設定浮球機四個時間模組（開球的時間差）真的可以影響賓果的公平性嗎？", opts: ["經店家說有影響，即可影響","可以","看設定是否開放","不可以"], ans: 3 },
+  { q: "輪盤遊戲中，選擇其中一個號碼後，電腦自動再押前後各二個號碼為何種押注方式？", opts: ["相鄰投注","輪盤下角注","零旁投注-少","零旁投注-多"], ans: 0 },
+  { q: "百家樂遊戲中，一場遊戲「最多」發幾張牌？", opts: ["4張牌","6張牌","2張牌","8張牌"], ans: 1 },
+  { q: "Casino3 T系列百家遊戲在新換局設定中，哪一張牌面會被視為切牌張數？", opts: ["第五張牌面","隨機一張牌","第一張牌面","最後一張牌面"], ans: 2 },
+  { q: "五代洗牌機中，5.2代是安裝何種項目稱之？", opts: ["主動式壓牌桿","10吋觸控螢幕","恆光模組","FRW-K10-20"], ans: 1 },
+  { q: "五代洗牌機中，主動式壓牌桿是為幾代？", opts: ["5.1","5.2","5.5","5.3"], ans: 2 },
+  { q: "關於雀神滿天下，何者正確？", opts: ["該場分數不足賠分時，下次登入會把不足的扣回來","抽佣為整個伺服器統一%數","該場分數不足賠分時，僅賠剩餘分數","抽佣最高可抽40%"], ans: 2 },
+  { q: "下列何者為R200、R220骰寶機檯的A級更新項目？", opts: ["骰盅","骰子","霍爾開關","恆光模組"], ans: 3 },
+  { q: "Casino3 T系列百家遊戲自動重置局數場的最大設定為多少？", opts: ["100","500","999","50"], ans: 2 },
+  { q: "百家樂遊戲，針對「莊家」、「閒家」的押注過程中，選擇何種玩法時，不受其押注限額的限制？", opts: ["加押玩法","保險玩法","莊家六點","積寶玩法"], ans: 0 },
+  { q: "百家樂遊戲中，若某一家出現「天牌」，則該場最多發幾張撲克牌？", opts: ["5張","不一定","6張","4張"], ans: 3 },
+  { q: "關於I201，何者正確？", opts: ["可接其他廠商遊","可接平台商","僅能單一使","上限人數150人"], ans: 2 },
+  { q: "關於E-Bingo何者錯誤？", opts: ["最多可以一次買20盤","前面30顆球為固定開球數","為90顆球賓果遊戲","每場都會有Free ball"], ans: 3 },
+  { q: "百家二代中有押積寶的功能，請問以下那種牌型是符合積寶的中獎條件？", opts: ["莊家K8、閒家Q8","莊家J9、閒家9K","莊家222、閒家KK6","莊家AAA、閒家A43"], ans: 1 },
+  { q: "關於E-Bingo何者正確？", opts: ["為單機遊戲無法與BS3連線","目前有兩個小遊戲及一個累積獎","最多可買10個盤","30球後的10顆球為固定費用"], ans: 1 },
+  { q: "當「營業額」達到設定的值時，手臂會停止開牌，請問此功能為？", opts: ["業績臨界點警示","警示門板警示","牌號警示","切牌"], ans: 0 },
+  { q: "CASINO1系統開放「玩家自由切換」的功能中，下列敘述何者為有誤？", opts: ["骰寶可切換標準型及簡易型押注畫面","BJ玩家可選擇插花檯或正常檯","單挑可切換一張牌及三張牌玩法","百家樂可切換莊家免佣玩法及標準玩法"], ans: 2 },
+  { q: "公司賓果遊戲有「75球」與「50球」二種玩法，請問「50球」玩法中每一個賓果盤是由幾個不同的數字組成？", opts: ["19","14","100","24"], ans: 1 },
+  { q: "何者非為5.2代洗牌機之優勢？", opts: ["觸控智慧面板","自動銷毀破損之牌","側邊維修門方便檢測與保養","多種洗牌模式"], ans: 1 },
+  { q: "關於I系列下列何者錯誤？", opts: ["I200有實體版及雲端版本，可使用手機平板或電腦遊戲","I100提供20個測試帳號可同時上線"], ans: 1 },
+  { q: "S系列全電子開答的機台編號為何？", opts: ["S220","S300","S200","S100"], ans: 1 },
+  { q: "R220推筒仔遊戲，大約多少時間可完成一局遊戲？", opts: ["12秒","60秒","30秒","90秒"], ans: 1 },
+  { q: "五代洗牌機中，5.3代是安裝何種項目稱之？", opts: ["10吋觸控螢幕","FRW-K10-20","恆光模組","主動式壓牌桿"], ans: 1 },
+  { q: "關於公司I系列何者正確？", opts: ["一定要有實體開答","可以接S型機台","上線人數無上限","有I100、I200、I201"], ans: 3 },
+  { q: "天九牌總共有幾張牌？", opts: ["32","36","40","52"], ans: 0 },
+  { q: "Shuffler OCR V130版新增何種功能？", opts: ["整合深度學習辨識","設定項及學習模式的密碼保護功能","錯誤代碼中文敘述","重洗驗牌次數及重置功能"], ans: 0 },
+  { q: "公司浮球系列的產品是透過何種方式來進行球號感應？", opts: ["掃描","條碼","RFID晶片","紅外線"], ans: 2 },
+  { q: "S系列小妞妞遊戲中，關於「公牌」的敘述何者有誤？", opts: ["公牌發牌順序可設為先發或後發","可設定公牌的張數","公牌可當任意牌"], ans: 2 },
+  { q: "筒子系統單機限押15萬分、單門限押5萬分，店家覺的輸贏太大，但想讓部分客人可以單門押到5萬分，更改何種設定較恰當？", opts: ["單機單門限額","單機限額","全場單門限額","大小押按紐分數"], ans: 2 },
+  { q: "輪盤遊戲中，若將籌碼放到「2To1」字樣的方框，則表示下注幾個號碼？", opts: ["6","4","2","12"], ans: 3 },
+  { q: "公司推出之R220楚河漢界，使用之象棋牌有幾張？", opts: ["24張","32張","16張","64張"], ans: 1 },
+  { q: "CASINO切換多遊戲時，下列敘述何者為「非」？", opts: ["不同遊戲可設定不同的背景音樂","每個遊戲的五個押注選擇籌碼皆需相同","每個遊戲畫面上的總分都相同","每個遊戲的顯示帳號都相同"], ans: 1 },
+  { q: "百家二代新增可以選擇洗牌次數、分牌模式等的「洗牌機模組」功能，請問共有幾組模式可以供選擇切換？", opts: ["10組","5組","8組","7組"], ans: 0 },
+  { q: "Casino3 T系列百家遊戲當辨識到切牌卡時，系統會如何處理？", opts: ["重置玩家下注限額","提示荷官增加賠率","提示荷官換局","重置倒數計時"], ans: 2 },
+  { q: "筒子遊戲中，「出」、「川」、「尾」各家對於『莊家』的輸贏機率各約為多少？", opts: ["1/8","依設定而定","1/2","1/6"], ans: 2 },
+  { q: "一般遊戲皆會設計整場可以接受「玩家押注分數的上下限」設定，請問用意較接近下列何者？", opts: ["增加遊戲刺激感","增加公平公正性","防止押注額過大","防止押注某一方偏高"], ans: 2 },
+  { q: "輪盤遊戲中，若選擇「相鄰投注」表示下注幾個號碼？", opts: ["3","5","2","4"], ans: 1 },
+  { q: "百家樂遊戲「莊家6點贏賠1.5倍，其餘點數賠2倍」，此玩法稱為？", opts: ["對子百家樂","免佣百家樂","第二個和"], ans: 1 },
+  { q: "E系列中的遊戲，比率是多少？", opts: ["1:20","1:10","1:2","1:5"], ans: 0 },
+  { q: "下列敘述何者有誤？", opts: ["EGM是指所有的電子遊戲機檯","SMIB是介於EGM與後端管理系統之間的構通橋樑","SAS是指SMIB與後端管理系統之間的通訊協定"], ans: 2 },
+  { q: "關於天九，何者錯誤？", opts: ["可押牌型或點數和","使用的實體開答機構為麻將機","牌有兩種分別為文牌及武牌","牌型點數與莊家相同則平手退分"], ans: 3 },
+  { q: "關於BS3何者錯誤？", opts: ["有跨店連線彩金系統","T可跨店使用相同會員資料","支援摸彩及抽獎系統","可接測試過的SAS非SAS機台"], ans: 0 },
+  { q: "關於雀神滿天下的功能，何者錯誤？", opts: ["可設定RTP","有眼牌功能","玩家可決定玩法","可設定機器人強度"], ans: 0 },
+  { q: "百家樂遊戲中，何者為「天牌」的牌面？", opts: ["A、K、8","A、6","6、6、6","A、8"], ans: 3 },
+  { q: "R系列中R220機檯增加修改了那個部份而改變為R223？", opts: ["五代洗牌機","IP CAM","恆光模組","P223套件"], ans: 3 },
+  { q: "何者為5.5代洗牌機主要變更機構？", opts: ["靜電消除","主動式壓牌","OLDE觸控面板","自動清潔感測器"], ans: 1 },
+  { q: "百家遊戲有開放「222」的累積玩法時，累積金額為50000分，一玩家針對莊家做押注1000分（1000分以上拉累積50%），該場遊戲結果：莊家牌面為「梅花2、紅心2、黑桃2」，而閒家牌面為「紅磚8、黑桃5、紅心5」請問玩家的得分為何？", opts: ["25000","26950","50000","27000","0"], ans: 4 },
+  { q: "CASINO1百家遊戲雙對賞玩法下列何者有誤？", opts: ["雙對賞可與累積獎同時開放使用","雙對賞須莊閒對子同時押注才算中獎","雙對賞是一種外贈的玩法"], ans: 0 },
+  { q: "關於Casino3平板押注，何者正確？", opts: ["支援百家輪盤骰寶筒子天九遊戲","任何廠牌平板都可支援","需要有連外網路","需要有BS3標準版"], ans: 3 },
+  { q: "下列何者非五代洗牌機的功能？", opts: ["驗牌","數牌","辨識條碼","自我學習"], ans: 2 },
+  { q: "百家「優惠倍率」的押注項目何者為非？", opts: ["閒家","莊對","和","閒對"], ans: 0 },
+  { q: "百家樂遊戲啟用免佣百家樂玩法，押莊5000分、押和2000分，結果閒家(3、1、6)莊(2、1、1)，請問得分為何？", opts: ["4850","5000","答案皆非","4750"], ans: 1 },
+  { q: "關於I系列Slot遊戲，何者錯誤？", opts: ["有保留機台功能","可選擇想玩的遊戲及台號","有試玩模式","有實體視訊"], ans: 3 },
+  { q: "金錢豹描述何者錯誤？", opts: ["一定要開到決定冠亞軍才會結束","展示畫面有一般豹及金錢豹兩種","有五匹豹及十匹豹的玩法","十匹豹可以押冠亞軍總合1~20號"], ans: 3 },
+  { q: "I系列目前支援的實體開答來源，何者錯誤？", opts: ["單挑","筒子","妞妞","威運彩"], ans: 3 },
+  { q: "百家樂保險玩法中下列敘述何者正確？", opts: ["開放保險玩法時，玩家可於每一場玩保險遊戲","保險是一種針對該贏未贏時的一種押注玩法","保險玩法中的賠率都相同","買八點保險時，只要對方開出八點就賠保險"], ans: 1 },
+  { q: "百家樂玩家押「莊5000分、押閒1000分」，開「和」，該玩家本場結果為何？", opts: ["莊退5000閒退1000","莊退4750閒退1000","莊輸5000閒輸1000","依押注大小判定"], ans: 0 },
+  { q: "百家樂遊戲標準玩法中，閒家的賠率為多少（含本注）？", opts: ["12倍","1倍","1.95倍","2倍"], ans: 3 },
+  { q: "目前五代洗牌機正常一次洗牌（8副牌）時間約為幾秒？", opts: ["121秒~140秒","100秒~120秒","60秒~80秒","80秒~90秒"], ans: 1 },
+  { q: "下列何者非C-slot的優勢？", opts: ["可以結合到BS3帳務系統","有多個遊戲可以選擇","可以同時玩多個遊戲","可與casino3遊戲結合增加遊戲豐富性"], ans: 1 },
+  { q: "Casino3遊戲單機有支援籌碼拖曳功能，請問下列敘述何者正確？", opts: ["押注區內之籌碼拖曳至押注區外則為退押","押注區內之籌碼拖曳轉移後，若會超過其押注限額則籌碼無法拖曳轉移","以上皆是","押注區內之籌碼拖曳至別的押注區，為轉移籌碼功能"], ans: 2 },
+  { q: "關於雀神滿天下，何者錯誤？", opts: ["可真人視訊通話對戰","可開四個廳","可接實體機台Z210","機器人代打會自動刁牌"], ans: 3 },
+  { q: "五代洗機中，5.5代最新增加的是何種模組？", opts: ["FRW-K10-20","10吋觸控螢幕","主動式壓牌桿","恆光模組"], ans: 3 },
+  { q: "發發發電子遊戲場有R200雙核心百家樂3檯，共六個百家樂遊戲，如何區別這些遊戲？", opts: ["單機桌面文字設不同","遊戲GSB顯示遊戲名稱及編號","遊戲背景色設不同","以上皆是"], ans: 3 },
+  { q: "百家樂開放「免佣玩法」玩法，請問下列何者為『天牌』牌面？", opts: ["K、6","A、8","A、9、K","6、6、6"], ans: 1 },
+  { q: "公司推出之賽豹遊戲搭配之機台為何？", opts: ["B550","B100","B2200","B200"], ans: 0 },
+  { q: "請問百家樂遊戲在交易記錄、開牌記錄中『閒.B』代表何種意義？", opts: ["閒家開出對子，莊家贏","莊家開出對子，閒家贏","閒家開出對子，閒家贏","莊家開出對子，莊家贏"], ans: 1 },
+  { q: "關於I系列PK何者錯誤？", opts: ["可隨時切換張數玩法","2張牌玩法為龍虎","有3張牌模式可以選擇"], ans: 0 }
+];
+
+const SC2_BANK = [
+  { q: "依公司環境維護規範-回收標準，下列敘述何者錯誤？", opts: ["餐盒、飲料杯需落實「清空、清洗、壓扁」三個步驟後才可丟入回收桶","當月全體同仁違規次數總計超過5次，該樓層之回收垃圾桶將暫時「上鎖一天」","第一次查證屬實扣紅利點數3點","第三次以上仍未改善者，除再扣點外還會列入年度績效考績評核"], ans: 2 },
+  { q: "關於公務車肇事後的處理，下列何者有誤？", opts: ["肇事後應保持現場，立即向附近警察機關報案","若無報案自行私下和解，經查後除責懲處外，肇事責任全責","駕駛人只需配合交通警察處理，重新填寫事故事件報告書","若車輛因天災或不可抗力造成損壞且駕駛人無責，由公司承擔全部責任"], ans: 2 },
+  { q: "若大樓發生火災，推開樓梯間防火門發現「無煙、無熱」時，正確的避難行動應為何？", opts: ["向上逃","向下逃","搭乘電梯","躲進廁所"], ans: 1 },
+  { q: "A同仁臨時有公務用車需求，但當下無法親自操作EIP填寫設備預約，請B同仁代為填寫。依公務車預約規範，下列何者正確？", opts: ["由B代填即可，申請人欄位填B的名字，無需額外註記","B代填時，必須在設備預約上確實註記實際用車人員為A，否則視為填寫不完整並依規懲處","臨時需求可事後補填，不需事先於EIP完成預約","代填者與實際用車人不同，該次申請視為無效，A須親自填寫才能用車"], ans: 1 },
+  { q: "關於二次發薪制度，每月薪資發放時間何者正確？", opts: ["第一次10日、第二次15日","第一次5日、第二次10日","第一次5日、第二次20日","第一次1日、第二次10日"], ans: 1 },
+  { q: "小美年資已滿10年，當年度考核期間因非法定因素申請留職停薪10個月，實際在職2個月。依新制年資獎金計算方式，小美該年度應領取多少年資獎金？", opts: ["30,000元","7,500元","2,000元","3,600元"], ans: 2 },
+  { q: "申請復職之人員，應於留職停薪屆滿前幾日主動向原部門主管及管理部人事單位提出復職申請？", opts: ["5日","7日","10日","15日"], ans: 3 },
+  { q: "某同仁駕駛公務車時闖紅燈被取締，依公務車管理辦法，下列敘述何者正確？", opts: ["屬於一般違規，記點2點，罰款由公司代繳","屬重大違規，記點3點，罰款部分由駕駛人自行負責，公司將記點轉移至駕駛人名下","屬特殊違規，公司直接申請停止借用公務車一年","罰金與違規記分人均由公司全部承擔，駕駛人只需繳納罰緩"], ans: 1 },
+  { q: "審核車輛的行政人員，收到設備預約申請，申請人為同仁A，但前來領取鑰匙的人是同仁B。依公務車鑰匙交付規範，行政人員應如何處理？", opts: ["B既然說明原因，就可將鑰匙交付B","只要有設備預約申請單，不論誰來領取鑰匙均可交付","行政人員應確認設備預約申請人（或註記之實際用車人員）與領取鑰匙者為同一人，B與申請人不符，不得交付鑰匙","行政人員可先將鑰匙交付B，事後再請A補填資料即可"], ans: 2 },
+  { q: "公司精神要到哪裡查看？", opts: ["網路硬碟","共享資訊","天下語錄","文管中心"], ans: 1 },
+  { q: "下列哪一段上班時間應盡量避免使用總公司11樓印表機、飲水機、碎紙機？", opts: ["13:00-13:10","12:50-13:10","都可使用","12:40-13:10"], ans: 1 },
+  { q: "申請個人文具、工具、名片時應填寫那一張表單？", opts: ["EIP行政類表單-個人用品申請單","鼎新-零用金申請單","鼎新-請購單","EIP行政類表單-美編行企委託單"], ans: 0 },
+  { q: "如果有事要出差或是請假要設定EIP流程代理人，應該到哪裡進行設定？", opts: ["傳閱資訊","設備預約","行程任務","電子簽核"], ans: 3 },
+  { q: "某一位同仁本月有差旅費800元、停車費200元、車資150元三筆費用需申請，均為本人實際支出。依鼎新ERP系統費用申請規範，下列操作方式何者正確？", opts: ["三筆費用性質不同，須分別建立三張申請單","同一人同一月份的費用，可合併打在同一張I401申請單","停車費須使用I402零用金撥補申請，差旅費與車資才用I401","車資與停車費使用I401，差旅費須另開I402申請"], ans: 1 },
+  { q: "如欲申請個人外訓課程，需填寫EIP-電子簽核哪類表單？", opts: ["行政類-簽呈","行政類-美編行企委託單","行政類-支援申請單","人事類-外訓觀展申請單"], ans: 3 },
+  { q: "臨時請假欲使用「榮譽假」時，請假單位最小為何？", opts: ["4小時","1小時","1天","0.5小時"], ans: 0 },
+  { q: "公司統一編號為何？", opts: ["22341588","24250359","22341234","22350671"], ans: 1 },
+  { q: "依公司最新全勤獎金計算規範，下列哪些情況會導致員工「無全勤獎金」？", opts: ["當月請病假8小時","當月請一般事假","當月以照顧家庭成員為由請事假","當月因到職不足月"], ans: 1 },
+  { q: "員工若違反「員工行為準則暨維護商譽聲明書」之承諾，且情節重大（如涉及刑責），公司得採取何種措施？", opts: ["僅給予書面警惕","強制員工參加教育訓練","不經預告逕行解除勞動契約","暫停薪資發放三個月"], ans: 2 },
+  { q: "執行公務時所領出的物品，在公務執行完畢後所剩餘的物品應如何處理？", opts: ["返還給公司","送給業者","先收下來做個人備品","直接丟掉"], ans: 0 },
+  { q: "公司的iNet系統-外勤回報APP，當你騎機車出外勤到A店家後結束後到工廠取料件，再去B店家維修後回公司，請問下列操作何者正確？", opts: ["新增回報到A店家→到A店家時打卡→新增回報去工廠→到工廠時打卡→新增回報去B店家→到B店家時打卡→新增回報回公司→到公司時抵達→選樓層","新增回報到A店家→新增回報去工廠→新增回報去B店家→新增回報回公司→到公司時抵達→選樓層","新增回報到A店家→到A店家時打卡→新增回報去工廠→到工廠時抵達→新增回報去B店家→到B店家時打卡→新增回報回公司→到公司時打卡→選樓層","為了專心騎車安全，外勤期間無需操作手機，待維修任務全數完成並回到公司後，再於系統一次補齊所有地點的打卡紀錄"], ans: 0 },
+  { q: "欲了解管理部發佈之【管理部好康報報】政府相關新制資訊懶人包，可至EIP何處查詢？", opts: ["傳閱資訊","討論群組","共享資訊","公佈欄"], ans: 1 },
+  { q: "EIP天使投票截止日訂於每週的哪一天？", opts: ["每週最後一個工作天","每週日","每週六","每週四"], ans: 0 },
+  { q: "關於iNet外勤回報APP下列敘述何者正確？", opts: ["登入帳號為員工編號","不用送出帳號申請即可登入","可任意設定登入密碼","離職員工仍可持續登入並查閱過往之回報紀錄"], ans: 0 },
+  { q: "使用iNet外勤系統，新增回報時發現交通工具的內容選項太多，可至何處做刪除？", opts: ["無法刪除","直接刪除","須請系統管理員協助刪除","系統設定"], ans: 3 },
+  { q: "公司成立一個勤務中心請問電話號碼是？", opts: ["04-22341223","04-22341234","04-22341222","04-22341233"], ans: 1 },
+  { q: "小南年資15年，當年度因育嬰留職停薪（法定留停）8個月，實際在職4個月。依新制年資獎金計算方式，小南該年度應領取多少年資獎金？", opts: ["3,600元","30,000元","10,000元","2,000元"], ans: 2 },
+  { q: "依據「員工行為準則暨維護商譽聲明書」，員工於執行職務期間，下列哪項行為屬於明確禁止的非法活動？", opts: ["於休假期間個人參與合法娛樂活動","利用公司名義參與博弈或聚眾鬥毆","在公司內部發表個人意見","下班時間參與社區志工服務"], ans: 1 },
+  { q: "依勞基法規定：依到職年資核給特別休假何者有誤？", opts: ["2年以上，未滿3年：10日","6個月以上，未滿1年：3日","1年以上未滿2年：5日","3年以上，未滿5年：14日"], ans: 2 },
+  { q: "無正當理由連續曠職幾日，公司得終止任用？", opts: ["1日","5日","3日","6日"], ans: 2 },
+  { q: "何為優良駕駛資格？", opts: ["非公務時間自願性協助擔任司機","一年內罰單總金額不超過一萬元","一年內均無使用到公務車","一年內無違規罰單且無肇責之事故"], ans: 3 },
+  { q: "若駕駛公務車不幸發生事故，導致下一年度車輛保費增加，則保費增加部分將如何分配？", opts: ["換家保險公司投保","由公司全額負擔","由肇責駕駛人依比例負擔","由肇責駕駛人全額負擔"], ans: 2 },
+  { q: "總公司公務車的鑰匙由管理部行政人員保管，非上班時間申請核准後需向誰領取鑰匙？", opts: ["工程部晚班值班人員","大樓管理員","未下班之任一同仁","勤務中心"], ans: 3 },
+  { q: "若同仁延長工作時間與客戶或貴賓接洽、應酬，時間超過幾點，經由部門主管核准，並在部門Line群組中告知，可於接續上班日在家進行補眠？", opts: ["24：00","19：00","21：00","不限時間"], ans: 2 },
+  { q: "關於生理假之請假規定，何者為非？", opts: ["一個月以一次為限","回公司上班後需補送「請假加班申請單」","一個月合計不超過8小時即可","扣除半薪，不扣全勤"], ans: 2 },
+  { q: "關於事假之請假規定，何者為非？", opts: ["因事需本人處理，每年合計小於等於14日","年度累計事假日數超過14日者，得轉為年薪制","請事假日數超過10日者，管理部人事組主動發傳閱提醒部門主管做員工關懷與輔導","超過14日的部分，公司有准駁事假的權利"], ans: 1 },
+  { q: "汽車駕駛人於行駛道路時，以手持方式使用行動電話進行撥接、通話者，將處新台幣多少錢？", opts: ["3000元","6000元","15000元","12000元"], ans: 0 },
+  { q: "大樓機車停車位每半年重新進行一次抽籤，何者非為評估抽籤資格之參考依據？", opts: ["年資","年紀","遲到紀錄","請假紀錄"], ans: 1 },
+  { q: "下列哪一個項目是在每月5日（第一次）薪資入帳？", opts: ["加班費","全勤獎金","保姆津貼","請假扣款"], ans: 2 },
+  { q: "關於生日假之規定，何者正確？", opts: ["生日當月可自由挑選休假日","當月合計休假時數8小時內即可","生日前一年期間累計之獎懲相抵達嘉獎乙次以上，使得申請","當日薪資照給，扣除全勤獎金"], ans: 2 },
+  { q: "由資材部規劃的年度料件盤點一年有幾次？", opts: ["1次","2次","3次","4次"], ans: 1 },
+  { q: "符合生日假資格者，如生日當日遇例假日，應如何休假？", opts: ["生日後一週內自行擇期補休","生日當日前之星期五進行補休","生日當日前一週自行擇期補休","因剛好為例假日及不得再補休"], ans: 2 },
+  { q: "下列何者非為開放查看手機及抽菸時段？", opts: ["10：00-10：10","17：00-17：10","15：00-15：10","11：00-11：10"], ans: 0 },
+  { q: "依公司最新全勤獎金計算規範，某同仁於某月請病假16小時，其餘工作日均正常出勤，該月全勤獎金應為多少元？", opts: ["2,000元","1,867元","1,734","0元"], ans: 1 },
+  { q: "員工若故意損壞公物、丟棄隱匿公物未提報者，經查證屬實，應負公物損壞多少比例之責任？", opts: ["賠償50%","補足保險理賠之差額","賠償70%","全額賠償"], ans: 3 },
+  { q: "同仁小華於11月第二次薪資項目為：加班費800元、事假扣款2,000元、其他代扣項目無。依二次發薪制度，下列處理方式何者正確？", opts: ["公司於11月10日預支1,200元予小華，並於12月薪資（1月5日）扣回","公司於11月10日預支1,200元予小華，並於11月下次薪資扣回","小華須自行於10日前繳回差額1,200元","差額直接從11月5日已發薪資中追扣，不另行預支"], ans: 0 },
+  { q: "公務損壞初犯者，損壞維修金額3001元以上，肇事者賠償金額比例為何？", opts: ["3000元+(總維修費-3000)*20%","全額賠償","不需賠償","3000元+(總維修費-3000)*70%"], ans: 0 },
+  { q: "因個人因素未確實打上下班卡之懲處，以多久區間為計算單位？", opts: ["一個月","半年","一年","一季"], ans: 3 },
+  { q: "每季因各人因素忘記打卡達幾次，將依規定記申誡乙次？", opts: ["四次","兩次","十次","五次"], ans: 0 },
+  { q: "特休假未於期限內休畢者，若欲將時數展延，需如何辦理？", opts: ["發傳閱告知相關主管及人事","以簽呈方式，經核決主管核准後展延","主動告知人事請其協助","不需理會，將自動展延"], ans: 1 },
+  { q: "部門主管可視情況准駁請假，當日休假人數不得超過何比例？", opts: ["部門人數的三分之一","台中總公司人數50%","有找到代理人即可","全公司人數30%"], ans: 0 },
+  { q: "離職預告日規定，何者不正確？", opts: ["到職滿一年未滿三年，20日前提出","到職三年以上，30日前提出","到職滿十年不需提前提出","到職三個月未滿一年，10日前提出"], ans: 2 },
+  { q: "加班申請之補休應於何期限內休畢？", opts: ["核發日之次月底前","三個月內","無限制","當月底前"], ans: 0 },
+  { q: "如欲查詢自己的上下班打卡紀錄，可以去哪裡查詢？", opts: ["ERP","iNet後台","EIP登入紀錄","門禁記錄查詢"], ans: 3 },
+  { q: "上下班得以紙卡、人臉或指紋辨識方式登錄，若因外勤無法進行iNET打卡時，得採用何種方式？", opts: ["事後提出證明即可","自行向人事回報","於EIP中發出傳閱打卡","經部門主管同意於通訊軟體回報"], ans: 3 },
+  { q: "一個月內無正當理由曠職幾日，公司得終止任用？", opts: ["7日","6日","9日","8日"], ans: 1 },
+  { q: "員工育有年滿六歲以下（含）幼兒之「褓姆津貼」補助，下列配套措施何者有誤？", opts: ["若夫妻皆為公司員工，且符合領取「褓姆津貼」條件，雙方皆可領取補助","符合補助條件之員工，若於當月底前離職或辦理留職停薪員工，則當月「褓姆津貼」不予補助","申請補助時，員工必須準備「戶口名簿」或「戶籍謄本」影本交由管理部列冊登錄","褓姆津貼之申請應向管理部人事組提出"], ans: 0 },
+  { q: "員工借用公務車輛做私用，歸還後經保管單位檢查，未清潔乾淨經告知仍未改善者，依規定為何？", opts: ["扣紅利點數乙點","申誡乙次","扣紅利點數兩點","口頭宣導"], ans: 2 },
+  { q: "關於遲到規定，下列何者為非？", opts: ["每月遲到累計未達30分鐘（含），不影響當月之全勤獎金","當季單次遲到超過30分鐘（不含）累計達3次，記申誡乙次","每日遲到若為3分鐘（含）以內者，為彈性上班時間","遲到將會列入年終考核評比項目內"], ans: 2 },
+  { q: "交通新制，超速幾公里會被扣牌？", opts: ["10","20","40","30"], ans: 2 },
+  { q: "依照《道路交通管理處罰條例》第33條的「未保持安全距離」罰款金額多少？", opts: ["2500元~6500元","3000元~6000元","4000元~8000元","1600元~2500元"], ans: 1 },
+  { q: "小型車行駛國道上的安全車距以下敘述何者正確？", opts: ["國道上以100km/h的速度行駛，應與前車保持50公尺車距","國道上以110km/h的速度行駛，應與前車保持40公尺車距","國道上以120km/h的速度行駛，應與前車保持50公尺車距","國道上以90km/h的速度行駛，應與前車保持30公尺車距"], ans: 0 },
+  { q: "公司性騷擾申訴專線為？", opts: ["04-22341588#106","04-22341588#113","04-22341234#110","04-22341234#102"], ans: 0 },
+  { q: "以下何者不是避免工作中受傷的方法？", opts: ["按照SOP流程進行","作業中專心謹慎","按照自己的方式操作機器","避免工作中嬉戲"], ans: 2 },
+  { q: "CPR口訣為？", opts: ["叫叫CABD","叫叫CADB","叫叫ABCD","叫叫ADBC"], ans: 0 },
+  { q: "下列哪一項是正確的臨時停車流程？", opts: ["由申請人自行與管委會聯繫申請地下室進出權限","須事先告知車牌號碼，由管理部行政統一申請，並依指定位置與時間停放","只要不影響他人停車，可隨意停放在地下室任一空位","僅需口頭告知大樓保全或管理人員，即可直接進入地下室停放，不需經過管理部"], ans: 1 },
+  { q: "臨時請假欲使用「特休」時，請假單位最小為何？", opts: ["1小時","0.5小時","4小時","1天"], ans: 1 },
+  { q: "台灣反詐騙專線號碼？", opts: ["113","110","165","119"], ans: 2 },
+  { q: "汽車爆胎的緊急應變五步驟（a.放鬆油門 b.後方100公尺擺放故障標誌 c.打電話通報 d.滑行至路肩停放 e.捉穩方向盤），請依順序排列？", opts: ["abcde","eadbc","aedbc","abedc"], ans: 1 },
+  { q: "以下哪一種情境最可能是詐騙？", opts: ["官方網站公告抽獎活動，無需提供個資","銀行客服來電提醒帳戶異常，並請你親自臨櫃確認","網路購物時賣家要求跳過平台直接匯款","在公司接獲管理部通知，請您依正式ISO文件流程辦理相關作業"], ans: 2 },
+  { q: "滅火器使用順序？", opts: ["壓→掃→拉→瞄","拉→壓→掃→瞄","拉→瞄→壓→掃","壓→瞄→拉→掃"], ans: 2 },
+  { q: "當身上著火時，正確的處理方式為何？", opts: ["停止奔跑、躺下地面並滾動壓熄火焰","拍打火焰使其熄滅","立刻跳入水中或使用滅火器噴身體","尋找厚重衣物或滅火毯遮蓋口鼻，並站立等待他人救援"], ans: 0 },
+  { q: "國際會議廳講台麥克風調整方式？", opts: ["以黑色固定夾調整","以手握銀色管身的方式調整","墊腳尖","將麥克風直接拔下"], ans: 1 },
+  { q: "加班申請需於事實發生日（不含）後，幾個（含）工作天內提出申請？", opts: ["1天","3天","2天","當月送出申請即可"], ans: 0 },
+  { q: "同仁於11月底提出離職，最後工作日為11月28日。依二次發薪制度，薪資發放方式為何？", opts: ["依二次發薪制度，分別於12月5日及12月10日各發一次","不適用二次發薪制度，提前結算考勤後一律於12月5日全額發薪","因已離職，薪資須等待人工核算完成後不定期發放","僅發放固定薪資，加班費與全勤獎金一律不予計算"], ans: 1 },
+  { q: "非法定事由留職停薪者，留停期間最長為何？", opts: ["一個月","三個月","六個月","一年"], ans: 1 },
+  { q: "員工申請育嬰留職停薪，下列何者正確？", opts: ["任職滿三個月後即可申請","育嬰留停最長不得逾三年","申請育嬰留停期間三十日以上，須於留停起始日前十日提出書面申請","同時撫育兩名子女者，總期間以最大子女受撫育二年為限"], ans: 2 },
+  { q: "未於請假前一工作日完成請假程序皆屬臨時請假，下列何者臨時請假會計入臨時請假次數？", opts: ["生理假","家庭照顧假","喪假","事假"], ans: 3 },
+  { q: "同仁參加公司舉辦之旅遊活動可請休旅遊假，下列敘述何者錯誤？", opts: ["請假期間不給薪","請假期間給薪","不影響全勤獎金","免附證明文件"], ans: 1 },
+  { q: "同仁送交一張費用請款單，紫單到達財務課，財務課會於幾天內支付款項？", opts: ["當天立即付款","1天","3天","5天"], ans: 2 },
+  { q: "若發現部門有固定資產需要移轉或報廢，需申請EIP-電子簽核何種行政類表單？", opts: ["簽呈","電子權限申請單","資產異動單","個人用品申請單"], ans: 2 },
+  { q: "下列何者為E系列遊戲機之傳送媒介？", opts: ["網路","浮球機","機械手臂","搖骰機"], ans: 0 },
+  { q: "同仁在加入公司前已自行考取「乙種職業安全衛生業務主管」證照，入職後同意提供公司使用。依專業證照津貼獎勵辦法，可領取多少一次性津貼？", opts: ["1,800元","3,600元","5,400元","0元"], ans: 1 },
+  { q: "公司依法規需求，統一安排同仁參加「急救人員安全衛生教育訓練」，完成受訓並順利取得證照。依專業證照獎勵辦法，下列敘述何者正確？", opts: ["受訓費用由同仁自行負擔，取得證照後可申請NT$3,000津貼補償","受訓費用由公司全額支付，取得證照後可申請一次性獎勵$1,500","受訓費用由公司全額支付，取得證照後可申請一次性獎勵$3,000","受訓費用由公司全額支付，但公司安排受訓者不另給予任何獎勵"], ans: 1 },
+  { q: "年度會安排幾次水銷（文件水溶銷毀）？", opts: ["1次","2次","3次","4次"], ans: 1 },
+  { q: "三節動態獎金發放作業調整為下列何者？", opts: ["分為兩次發放：第一次發放「定額獎金」、第二次發放「KPI達標獎金」","分為兩次發放：第一次發放「KPI達標獎金」、第二次發放「定額獎金」","獎金採一次性全額發放，不分階段","個人領取的三節KPI獎金不屬於保密，同仁間可自由討論或對外宣傳"], ans: 0 },
+  { q: "當管理部發佈新的「作業辦法或是ISO文件」公告時，同仁應具備什麼樣的正確態度？", opts: ["只要跟我目前的工作無關，就可以不看","應主動閱讀並確認與自身權益或職責相關之處，如有疑義應即時提出","等到被稽核罰款時，再表示不知道有這項公告","僅需閱讀標題，細節等主管要求時再看"], ans: 1 },
+  { q: "同仁若遇資產（如辦公設備）損壞或有新資產之需求時，應如何依程序處理？", opts: ["為了節省資源，私下搬取其他部門閒置的資產使用","無需經部門主管同意自行購買後，再持發票直接向財務課報支，不需填寫單據","新購應遵守固定資產管理辦法，並於ERP申請「資產-請購單」，損壞則須發出「資產維修傳閱」告知管理部資產管理員；以上程序均須先經部門主管核准","視而不見，等到資產完全無法運作時再隨意丟棄"], ans: 2 },
+  { q: "若EIP-人事類表單-請假加班申請單已核准，事後修改「假別或時數」時，應如何依規定？", opts: ["僅需口頭告知部門主管，不需進行系統異動","直接電話通知人事組，由人事人員逕行修改","於月中或月底簽核出勤傳閱時，再一併於回覆","應先行告知部門主管獲准後，EIP發出「傳閱」通知管理部主管及人事組進行變更"], ans: 3 }
+];
+
+const MC_BANK = [
+  { q: "E332-B指的是什麼？", opts: ["艾訊框體","使用32吋螢幕","公司框體","使用33吋螢幕"], ans: [1,2] },
+  { q: "E系列使用的螢幕有那幾種？", opts: ["32吋","43吋","37吋","47吋"], ans: [0,1] },
+  { q: "關於T310開答何者正確？", opts: ["可大小牌共用","牌靴可與洗牌機共用","可使用平板押注遊戲","可結合到Casino3單機遊戲內"], ans: [1,2,3] },
+  { q: "使用百家二代的店家開放押碼回饋功能，為何系統要限制回饋上限？", opts: ["確保店家利潤","避免惡性競爭","避免機台當機","方便主管操作設定"], ans: [0,1] },
+  { q: "E系列使用的螢幕款式有那幾種？", opts: ["橫式","平面","凹面"], ans: [1,2] },
+  { q: "關於E-Bingo何者正確？", opts: ["滿盤才算得分","為90顆球賓果遊戲","可以買1~20個盤","前30球為固定球數"], ans: [1,2,3] },
+  { q: "CASINO系統中，針對百家二代累積獎的敘述，請問下列何者正確？", opts: ["中累積條件為「莊閒對子」時，遊戲結果開出莊閒對子且為「和」，此時莊閒雖皆為對子，但仍然不列入中獎條件","中累獎條件為「平手對子」時，平玩家必需要押「閒對」、「莊對」、「和」才會列入中獎條件","欲修改累積獎項目內容時，遊戲必需停止進行","中累積條件為「莊閒對子」時，遊戲結果開出莊閒對子，此時必需只押「莊對」及「閒對」才算中獎，若其中有押「和」就不算"], ans: [0,1,2,3] },
+  { q: "E332-A指的是什麼？", opts: ["艾訊框體","公司框體","使用33吋螢幕","使用32吋螢幕"], ans: [0,3] },
+  { q: "戰神賽特可選擇何種比率進行遊戲？", opts: ["1:1","1:5","1:20","1:10"], ans: [0,2] },
+  { q: "E343-B指的是什麼？", opts: ["使用43吋螢幕","艾訊框體","公司框體","使用34吋螢幕"], ans: [0,2] },
+  { q: "Casino遊戲中，開放玩家自選洗碼種類方式，請問有哪些方式可以選擇？", opts: ["贏碼","開分","輸碼","押碼","得碼"], ans: [0,2,3,4] },
+  { q: "下列何者為不給全薪的假？", opts: ["病假","事假","天災假","家庭照顧假"], ans: [0,1,2,3] },
+  { q: "攸關「2026年年終考核」，下列敘述何者正確？", opts: ["考核週期分為「上半年」及「下半年」兩階段進行","上半年考核區間為2026/01/01至2026/06/30","評分項目僅包含工作表現，不包含出勤狀況分數","上半年之考核成績，將佔年終總成績比例之40%"], ans: [0,1,3] },
+  { q: "關於公司「每週週會」之召開時間與相關規範，下列敘述何者正確？", opts: ["固定於每週一，下午17:00舉行","固定於每週第一個工作天，早上09:00舉行","週會遲到者將進行登記，並納入年終績效考核之評分參考","固定於每週最後一個工作天，早上09:00舉行"], ans: [1,2] },
+  { q: "下列哪些屬於法定留職停薪事由？", opts: ["育嬰","個人出國旅遊","因傷病超過法定期限須長期休養","應徵召服兵役"], ans: [0,2,3] },
+  { q: "關於員工婚、喪、喜、慶禮金申請單，下列敘述何者正確？", opts: ["需填寫EIP行政類表單-禮慰問金申請單","申請結婚禮金應檢附結婚喜帖或結婚證書為憑","向財務課申請","口頭告知主管即可"], ans: [0,1] },
+  { q: "公司同仁不應主被動收受客戶或廠商任何形式之餽贈，然客戶或廠商有餽贈或招待之情事，下列何者錯誤？", opts: ["若有關係到金錢的部份一律回報，其餘不須回報","主動回報主管，餽贈物則可自己收下","私自前往，只要不被公司知情即沒事","主動回報主管，告知餽贈場合、性質與估值，如有實物則予以繳回公司"], ans: [0,1,2] },
+  { q: "依據「員工行為準則暨維護商譽聲明書」，下列哪些屬於違規時可能受到的行政懲處？", opts: ["扣紅利點數","記申誡以上","降職或減薪","調離現職或扣除年度相關獎金"], ans: [0,1,2,3] },
+  { q: "關於臨時請假之規定，何者不正確？", opts: ["全年度臨時請假超過5次者，每超過乙次記申誡乙次","臨時請假者，需於請假日起算3（含）日內補辦請假手續","臨時請假是否准假，由部門主管視單位人力及工作進度等因素決定是否准假","只要在9：00上班前完成請假手續即為正常請假"], ans: [1,3] },
+  { q: "關於留職停薪規定何者正確？", opts: ["留職停薪當年度未休畢之特休，依等比例現金計算","申請人應填寫留職停薪申請單及交接清單","留職停薪其間年資照常計算","留職停薪所含括之年度不列入計算特別休假之基礎"], ans: [0,1,3] },
+  { q: "下列何者為公務車駕駛人義務？", opts: ["歸還車輛時須確實於iNET抵達並輸入里程","應負維持公務車整潔之責","發生事故時應第一時間聯絡警察機關及保險公司","每週登記使用里程數"], ans: [0,1,2] },
+  { q: "新增特休假預支乙案，下列何者正確？", opts: ["適用資格需在職年資滿兩年以上","有需求者以簽呈方式申請","可預借可休日（時）數的四分之一","尚有補休者仍可申請預支特休假"], ans: [0,1,2] },
+  { q: "公務車肇事當年度初犯者損害賠償試算下列何者正確？", opts: ["車禍肇事責任七成（含）以上，一萬以上賠償比例：扣除保險後總額-10000，肇事者50%、肇事部門20%、公司30%","車禍肇事責任五成（含）以上、七成（不含）以下，五千以上賠償：扣除保險後總額-5000，肇事者30%、肇事部門30%、公司40%","車禍肇事責任五成（不含）以下，三千以上賠償：扣除保險後總額-3000，肇事者20%、肇事部門30%、公司50%","若當年度發生第二次（含）以上之肇事，賠償比例將依上述比例加倍計算"], ans: [0,1,2] },
+  { q: "遭遇性騷擾時應以何種方式申訴？", opts: ["書面","口頭","私下向非權責主管抱怨","僅向朋友訴苦"], ans: [0,1] },
+  { q: "公司勞動契約附加條款內針對勞基法第12條第4款的具體事項補充內容何者正確？", opts: ["於任職期間有發生職場霸凌、性騷擾、性侵害、強制猥褻等事件，情節重大經調查屬實","因個人行為或未依公司規範執行勤務，致使公司信譽受損或使公司遭受求償損失者","利用公司名義在外招搖撞騙，影響公司利益或使公司遭受莫名波及賠償者","於任職期間對於僱主、僱主家屬或其他共同工作之勞工，有毀謗、加重毀謗、造謠等事件，情節重大"], ans: [0,1,2,3] },
+  { q: "常見詐騙手法有哪些？", opts: ["假投資詐騙","網路購物詐騙","假交友愛情詐騙","公司郵件收到ehr薪資通知"], ans: [0,1,2] },
+  { q: "公司環境維護何者正確？", opts: ["使用完廁所、洗手台，請清潔水槽","用完擦手紙確實丟入垃圾桶內","離開會議室或公共區域時請將椅子歸位並關閉電燈","紙容器丟棄時需壓扁再丟棄"], ans: [0,1,2,3] },
+  { q: "關於年度內外勤考試的敘述，下列何者錯誤？", opts: ["每年舉辦一次，不限應考人員職級","測驗未通過者，可無限次進行線上補測","業務屬內勤人員，應考內勤測驗卷","每年分上、下半年兩次，經理級（含）以下均為應考人員"], ans: [0,1,2] },
+  { q: "辦公場域或作業環境中，下列哪些屬於容易引發火災的危險因素？", opts: ["電氣設備老舊或延長線過載使用","任意在非吸菸區吸菸或亂丟菸蒂","存放易燃物品（如酒精、溶劑）未遠離火源","逃生通道堆放雜物，導致散熱不良或引火"], ans: [0,1,2,3] },
+  { q: "關於辦公室內「公用飲水機」與「冰箱」的使用，下列敘述何者正確？", opts: ["冰箱內物品應標註姓名與日期，逾期或未標示者，管理部有權進行清理","飲水機僅供飲用，不可清洗餐具以避免堵塞","為了方便，私人餐具可長期放置於公共茶水間的烘碗機或是平台晾乾不收回","若不小心弄髒冰箱內部或飲水機周邊，應立即擦拭並恢復環境整潔"], ans: [0,1,3] }
+];
+
+const ESSAY_BANK = [
+  "一、百家樂限制押注場次，請問可針對哪些押注區做設定？為了要防止何事？切牌不秀牌的用意為何？",
+  "二、請說明E系列各編號代表的意思？\n（E343-K、E343-B、E332-B、E332-A 各是什麼）",
+  "三、試說明百家必勝7玩法及規則？",
+  "四、若業者反應業績不好，應如何處理較為合適？",
+  "五、說明R223運作方式及優勢"
+];
+
+// ─── STATE ───────────────────────────────────
+let drawn = { tf: [], sc1: [], sc2: [], mc: [] };
+let submitted = false;
+
+function shuffle(arr) {
+  let a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function pickN(arr, n) {
+  return shuffle(arr.map((_, i) => i)).slice(0, n).sort((a, b) => a - b);
+}
+
+function startExam() {
+  const dept = document.getElementById('inp-dept').value.trim();
+  const name = document.getElementById('inp-name').value.trim();
+  if (!dept || !name) { alert('請填寫部門與英文姓名後再開始！'); return; }
+  drawn.tf  = pickN(TF_BANK, 10);
+  drawn.sc1 = pickN(SC1_BANK, 10);
+  drawn.sc2 = pickN(SC2_BANK, 15);
+  drawn.mc  = pickN(MC_BANK, 15);
+  document.getElementById('user-tag').textContent = `部門：${dept}　姓名：${name}`;
+  document.getElementById('cover').style.display = 'none';
+  document.getElementById('exam').style.display = 'block';
+  renderExam();
+  updateProgress();
+}
+
+function renderExam() {
+  const body = document.getElementById('exam-body');
+  let html = '';
+  let qNum = 1;
+  const OL = 'ABCDE';
+
+  // T/F
+  html += sectionHdr('是非題');
+  drawn.tf.forEach((idx, i) => {
+    const q = TF_BANK[idx];
+    html += `<div class="q-card" id="qc-tf-${i}">
+      <div class="q-text"><span class="q-num">${qNum++}</span><span class="q-text-content">${q.q}</span></div>
+      <div class="tf-options">
+        <button class="tf-btn" id="tf-${i}-T" onclick="selTF(${i},'T')">○ 正確</button>
+        <button class="tf-btn" id="tf-${i}-F" onclick="selTF(${i},'F')">✕ 錯誤</button>
+      </div></div>`;
+  });
+
+  // SC1
+  html += sectionHdr('選擇題');
+  drawn.sc1.forEach((idx, i) => { html += buildSC('sc1', i, qNum++, SC1_BANK[idx], OL); });
+
+  // SC2
+  drawn.sc2.forEach((idx, i) => { html += buildSC('sc2', i, qNum++, SC2_BANK[idx], OL); });
+
+  // MC
+  html += sectionHdr('複選題');
+  drawn.mc.forEach((idx, i) => {
+    const q = MC_BANK[idx];
+    const opts = q.opts.map((o, oi) =>
+      `<label class="opt-label"><input type="checkbox" name="mc-${i}" value="${oi}" onchange="markAns('qc-mc-${i}')"> ${OL[oi]}. ${o}</label>`
+    ).join('');
+    html += `<div class="q-card" id="qc-mc-${i}">
+      <div class="q-text"><span class="q-num">${qNum++}</span><span class="q-text-content">${q.q}</span></div>
+      <span class="multi-hint">☑ 複選題，請勾選所有正確答案</span>
+      <div class="q-options">${opts}</div></div>`;
+  });
+
+  body.innerHTML = html;
+}
+
+function sectionHdr(badge) {
+  return `<div class="section-header"><span class="section-badge">${badge}</span></div>`;
+}
+
+function buildSC(type, i, qNum, q, OL) {
+  const opts = q.opts.map((o, oi) =>
+    `<label class="opt-label"><input type="radio" name="${type}-${i}" value="${oi}" onchange="markAns('qc-${type}-${i}')"> ${OL[oi]}. ${o}</label>`
+  ).join('');
+  return `<div class="q-card" id="qc-${type}-${i}">
+    <div class="q-text"><span class="q-num">${qNum}</span><span class="q-text-content">${q.q}</span></div>
+    <div class="q-options">${opts}</div></div>`;
+}
+
+function selTF(i, val) {
+  ['T','F'].forEach(v => document.getElementById(`tf-${i}-${v}`).classList.remove('selected'));
+  document.getElementById(`tf-${i}-${val}`).classList.add('selected');
+  document.getElementById(`qc-tf-${i}`).classList.add('answered');
+  updateProgress();
+}
+
+function markAns(cardId) {
+  document.getElementById(cardId).classList.add('answered');
+  updateProgress();
+}
+
+function getTFVal(i) {
+  if (document.getElementById(`tf-${i}-T`).classList.contains('selected')) return true;
+  if (document.getElementById(`tf-${i}-F`).classList.contains('selected')) return false;
+  return null;
+}
+
+function getSCVal(type, i) {
+  const r = document.querySelector(`input[name="${type}-${i}"]:checked`);
+  return r ? parseInt(r.value) : null;
+}
+
+function getMCVal(i) {
+  return Array.from(document.querySelectorAll(`input[name="mc-${i}"]:checked`)).map(c => parseInt(c.value)).sort((a,b)=>a-b);
+}
+
+function countAnswered() {
+  let c = 0;
+  drawn.tf.forEach((_,i) => { if(getTFVal(i)!==null) c++; });
+  drawn.sc1.forEach((_,i) => { if(getSCVal('sc1',i)!==null) c++; });
+  drawn.sc2.forEach((_,i) => { if(getSCVal('sc2',i)!==null) c++; });
+  drawn.mc.forEach((_,i) => { if(getMCVal(i).length>0) c++; });
+  return c;
+}
+
+function updateProgress() {
+  const total = 50;
+  const cnt = countAnswered();
+  document.getElementById('ans-count').textContent = `${cnt} / ${total}`;
+  document.getElementById('prog-fill').style.width = `${(cnt/total)*100}%`;
+}
+
+function submitExam() {
+  if (submitted) return;
+  const unanswered = 50 - countAnswered();
+  if (unanswered > 0 && !confirm(`目前有 ${unanswered} 題未作答，確定要提交嗎？`)) return;
+  submitted = true;
+  document.getElementById('btn-submit').disabled = true;
+
+  let tfScore=0, sc1Score=0, sc2Score=0, mcScore=0;
+  drawn.tf.forEach((idx,i) => { if(getTFVal(i)===TF_BANK[idx].ans) tfScore++; });
+  drawn.sc1.forEach((idx,i) => { if(getSCVal('sc1',i)===SC1_BANK[idx].ans) sc1Score++; });
+  drawn.sc2.forEach((idx,i) => { if(getSCVal('sc2',i)===SC2_BANK[idx].ans) sc2Score++; });
+  drawn.mc.forEach((idx,i) => {
+    const ua = getMCVal(i);
+    const ca = [...MC_BANK[idx].ans].sort((a,b)=>a-b);
+    if (JSON.stringify(ua)===JSON.stringify(ca)) mcScore++;
+  });
+
+  const correct = tfScore+sc1Score+sc2Score+mcScore;
+  const total = correct * 2;
+  const pct = total;
+  const dept = document.getElementById('inp-dept').value.trim();
+  const name = document.getElementById('inp-name').value.trim();
+
+  // 鎖定所有題目選項，防止重複修改
+  document.querySelectorAll('.tf-btn, .opt-label input').forEach(el => el.disabled = true);
+  document.querySelectorAll('.tf-btn').forEach(el => el.style.pointerEvents = 'none');
+
+  document.getElementById('overlay').classList.add('show');
+
+  const FORM_URL = 'https://docs.google.com/forms/d/e/1FAIpQLSd1NMf4TOQvqhRvRdcY4vui2Ed0WHzrqkBY0RrVQfVklE6SZg/formResponse';
+  const formData = new FormData();
+  formData.append('entry.1913681111', name);
+  formData.append('entry.1692840277', dept);
+  formData.append('entry.1341732725', total.toString());
+
+  fetch(FORM_URL, { method: 'POST', mode: 'no-cors', body: formData })
+    .catch(() => {})
+    .finally(() => {
+      document.getElementById('overlay').classList.remove('show');
+      showResults(tfScore, sc1Score, sc2Score, mcScore, total, pct, dept, name);
+    });
+}
+
+function showResults(tfScore, sc1Score, sc2Score, mcScore, total, pct, dept, name) {
+  document.getElementById('exam').style.display = 'none';
+  document.getElementById('result').style.display = 'block';
+  document.getElementById('result-user-tag').textContent = `部門：${dept}　姓名：${name}`;
+
+  // 已執行傳送動作提示
+  document.getElementById('send-confirm').style.display = 'flex';
+
+  document.getElementById('score-grid').innerHTML = `
+    <div class="score-cell total-cell"><div class="sc-label">學科總分</div><div class="sc-val">${total}</div><div class="sc-max">滿分 100 分</div></div>`;
+
+  document.getElementById('pct-label').textContent = `${total} 分`;
+  setTimeout(() => { document.getElementById('prog-big').style.width = `${pct}%`; }, 100);
+
+  const OL = 'ABCDE';
+  let rev = '';
+
+  // T/F review
+  rev += `<div class="section-header"><span class="section-badge">是非題</span></div>`;
+  drawn.tf.forEach((idx, i) => {
+    const q = TF_BANK[idx]; const ua = getTFVal(i); const ok = ua === q.ans;
+    rev += `<div class="q-card ${ok?'correct-card':'wrong-card'}">
+      <div class="q-text"><span class="q-num" style="background:${ok?'var(--correct)':'var(--wrong)'}">${i+1}</span><span class="q-text-content">${q.q}</span></div>
+      <div style="margin-top:10px;font-size:13px;display:flex;gap:20px;flex-wrap:wrap">
+        <span>你的答案：<strong>${ua===null?'（未作答）':ua?'○ 正確':'✕ 錯誤'}</strong></span>
+        <span>正確答案：<strong style="color:var(--correct)">${q.ans?'○ 正確':'✕ 錯誤'}</strong></span>
+        <span style="font-weight:700;color:${ok?'var(--correct)':'var(--wrong)'}">${ok?'✓ 答對':'✗ 答錯'}</span>
+      </div></div>`;
+  });
+
+  // SC review (combined)
+  rev += `<div class="section-header"><span class="section-badge">選擇題</span></div>`;
+  drawn.sc1.forEach((idx, i) => {
+    const q = SC1_BANK[idx]; const ua = getSCVal('sc1',i); const ok = ua===q.ans;
+    rev += buildSCRev(q, ua, q.ans, ok, i+1, OL);
+  });
+  drawn.sc2.forEach((idx, i) => {
+    const q = SC2_BANK[idx]; const ua = getSCVal('sc2',i); const ok = ua===q.ans;
+    rev += buildSCRev(q, ua, q.ans, ok, drawn.sc1.length+i+1, OL);
+  });
+
+  // MC review
+  rev += `<div class="section-header"><span class="section-badge">複選題</span></div>`;
+  drawn.mc.forEach((idx, i) => {
+    const q = MC_BANK[idx]; const ua = getMCVal(i);
+    const ca = [...q.ans].sort((a,b)=>a-b);
+    const ok = JSON.stringify(ua)===JSON.stringify(ca);
+    const uStr = ua.length ? ua.map(x=>OL[x]).join('、') : '（未作答）';
+    const cStr = ca.map(x=>`${OL[x]}. ${q.opts[x]}`).join('；');
+    rev += `<div class="q-card ${ok?'correct-card':'wrong-card'}">
+      <div class="q-text"><span class="q-num" style="background:${ok?'var(--correct)':'var(--wrong)'}">${i+1}</span><span class="q-text-content">${q.q}</span></div>
+      <div style="margin-top:10px;font-size:13px">
+        <div>你的答案：<strong>${uStr}</strong></div>
+        <div>正確答案：<strong style="color:var(--correct)">${cStr}</strong></div>
+        <div style="font-weight:700;color:${ok?'var(--correct)':'var(--wrong)'};margin-top:4px">${ok?'✓ 全對得分':'✗ 未全對，不得分'}</div>
+      </div></div>`;
+  });
+
+  document.getElementById('review-area').innerHTML = rev;
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function buildSCRev(q, ua, ca, ok, num, OL) {
+  const uStr = ua===null ? '（未作答）' : `${OL[ua]}. ${q.opts[ua]}`;
+  const cStr = `${OL[ca]}. ${q.opts[ca]}`;
+  return `<div class="q-card ${ok?'correct-card':'wrong-card'}">
+    <div class="q-text"><span class="q-num" style="background:${ok?'var(--correct)':'var(--wrong)'}">${num}</span><span class="q-text-content">${q.q}</span></div>
+    <div style="margin-top:10px;font-size:13px">
+      <div>你的答案：<strong>${uStr}</strong></div>
+      <div>正確答案：<strong style="color:var(--correct)">${cStr}</strong></div>
+      <div style="font-weight:700;color:${ok?'var(--correct)':'var(--wrong)'};margin-top:4px">${ok?'✓ 答對':'✗ 答錯'}</div>
+    </div></div>`;
+}
+</script>
+</body>
+</html>
